@@ -1,0 +1,28 @@
+---
+- name: To install httpd and apache service on RedHat and Debian
+  hosts: all
+  become: true
+  tasks:
+  - name: to install httpd on RedHat
+    yum:
+      name: httpd
+      state: installed
+    when: ansible_os_family == "RedHat"
+    notify: start apache
+
+  - name: to install apache2 on Ubuntu
+    apt:
+      name: apache2
+      state: present
+    when: ansible_os_family == "Debian"
+    notify: start apache2
+
+  handler:
+  - name: start apache
+    service: started
+  when: ansible_os_family == "RedHat"
+
+  - name: start apache2
+    service: started
+  when: ansible_os_family == "Debian"
+   
